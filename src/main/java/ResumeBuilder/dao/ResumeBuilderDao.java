@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -37,6 +39,9 @@ import ResumeBuilder.domain.ResumeBuilderDom;
 @Repository
 public class ResumeBuilderDao implements IResumeBuilderDao {
 
+	/** Logger for this class and subclasses */
+	protected final static Log logger = LogFactory.getLog(ResumeBuilderDao.class);
+	
 	//@Autowired
 	//CassandraOperations cassandraOperations;
 	private static class fileExtractMapper implements RowMapper<ResumeBuilderDom> {
