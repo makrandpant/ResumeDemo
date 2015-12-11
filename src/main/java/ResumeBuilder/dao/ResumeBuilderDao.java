@@ -23,10 +23,14 @@ import org.apache.tika.sax.ToXMLContentHandler;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cassandra.core.RowMapper;
 import org.springframework.data.cassandra.core.CassandraOperations;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.SAXException;
+
+import com.datastax.driver.core.Row;
+import com.datastax.driver.core.exceptions.DriverException;
 
 import ResumeBuilder.domain.ResumeBuilderDom;
 
@@ -35,28 +39,40 @@ public class ResumeBuilderDao implements IResumeBuilderDao {
 
 	//@Autowired
 	//CassandraOperations cassandraOperations;
+	private static class fileExtractMapper implements RowMapper<ResumeBuilderDom> {
+		@Override
+		public ResumeBuilderDom mapRow(Row rs, int arg1)
+				throws DriverException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
 
-	@Override
-	public MultipartFile pdfExtractor(ResumeBuilderDom resumeBuilderDom)
-			throws FileNotFoundException {
-		// Import any file and save it in .doc format
-		try {
-			byte[] bytes = resumeBuilderDom.getFileResume().getBytes();
-			BufferedOutputStream stream = new BufferedOutputStream(
-					new FileOutputStream(new File("D:\\resume\\new\\"
-							+ resumeBuilderDom.getFileName() + ".doc")));
-			stream.write(bytes);
-			stream.close();
-			System.out.println("You successfully uploaded "
-					+ resumeBuilderDom.getFileName() + "!");
-		} catch (Exception e) {
-			System.out.println("You failed to upload "
-					+ resumeBuilderDom.getFileName() + " => " + e.getMessage());
-		}// end of import
-
+		@Override
+		public MultipartFile importFile(ResumeBuilderDom resumeBuilderDom)
+				throws FileNotFoundException {
+			// Import any file and save it in .doc format
+			try {
+				byte[] bytes = resumeBuilderDom.getFileResume().getBytes();
+				BufferedOutputStream stream = new BufferedOutputStream(
+						new FileOutputStream(new File("D:\\resume\\new\\"
+								+ resumeBuilderDom.getFileName() + ".doc")));
+				stream.write(bytes);
+				stream.close();
+				System.out.println("You successfully uploaded "
+						+ resumeBuilderDom.getFileName() + "!");
+			} catch (Exception e) {
+				System.out.println("You failed to upload "
+						+ resumeBuilderDom.getFileName() + " => " + e.getMessage());
+			}// end of import
+			return null;
+		}
+		
+		public MultipartFile pdfFileExtractor(ResumeBuilderDom resumeBuilderDom)
+				throws FileNotFoundException {
 		// Read Content of PDf file using PDFBox api
 		
-		/*try {
+		try {
 			File file = new File("D:\\resume\\new\\"
 					+ resumeBuilderDom.getFileName() + ".pdf");
 			PDFParser parser = new PDFParser(new FileInputStream(file));
@@ -72,37 +88,19 @@ public class ResumeBuilderDao implements IResumeBuilderDao {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}*/
+		}
+		return null;
+	}
 		
-		//Parse .doc file using apache tika java api and extract content in Plain Text
-		/*try {
-			BodyContentHandler handler = new BodyContentHandler();
-			Metadata metadata = new Metadata();
-			Parser parser = new AutoDetectParser();
-			TikaInputStream inputstream = TikaInputStream.get(new File(
-					"D:\\resume\\new\\" + resumeBuilderDom.getFileName()
-							+ ".doc"));
-			ParseContext context = new ParseContext();
-			parser.parse(inputstream, handler, metadata, context);
-			System.out.println("Extracted Content: " + handler.toString());
-			System.out.println("Metadata Is: " + metadata);
-			
-			// Identify language of doc file
-			LanguageIdentifier identifier = new LanguageIdentifier(
-					handler.toString());
-			System.out.println("Language Used in Resume: "
-					+ identifier.getLanguage());
-		}catch(IOException | SAXException | TikaException e){
-			e.printStackTrace();
-		}*/
-
+		public MultipartFile docFileExtractor(ResumeBuilderDom resumeBuilderDom)
+				throws FileNotFoundException {
 		// Parse .doc file in html format using apache tika 
 		try{
 			ToXMLContentHandler handler = new ToXMLContentHandler();
 			AutoDetectParser parser = new AutoDetectParser();
 			Metadata metadata = new Metadata();
 			FileInputStream fistream = new FileInputStream("D:\\resume\\new\\"
-					+ resumeBuilderDom.getFileName() + ".html");
+					+ resumeBuilderDom.getFileName() + ".doc");
 			parser.parse(fistream, handler, metadata);
 			
 			// Extract html tag elements and content of tags 
@@ -127,3 +125,25 @@ public class ResumeBuilderDao implements IResumeBuilderDao {
 		return null;
 	}
 }
+
+//Parse .doc file using apache tika java api and extract content in Plain Text
+		/*try {
+			BodyContentHandler handler = new BodyContentHandler();
+			Metadata metadata = new Metadata();
+			Parser parser = new AutoDetectParser();
+			TikaInputStream inputstream = TikaInputStream.get(new File(
+					"D:\\resume\\new\\" + resumeBuilderDom.getFileName()
+							+ ".doc"));
+			ParseContext context = new ParseContext();
+			parser.parse(inputstream, handler, metadata, context);
+			System.out.println("Extracted Content: " + handler.toString());
+			System.out.println("Metadata Is: " + metadata);
+			
+			// Identify language of doc file
+			LanguageIdentifier identifier = new LanguageIdentifier(
+					handler.toString());
+			System.out.println("Language Used in Resume: "
+					+ identifier.getLanguage());
+		}catch(IOException | SAXException | TikaException e){
+			e.printStackTrace();
+		}*/

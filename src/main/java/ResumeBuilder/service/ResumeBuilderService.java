@@ -15,9 +15,15 @@ public class ResumeBuilderService implements IResumeBuilderService {
 	ResumeBuilderDao connect;
 	
 	@Override
-	public MultipartFile pdfExtractor(ResumeBuilderDom resumeBuilderDom) throws FileNotFoundException {
+	public MultipartFile importFile(ResumeBuilderDom resumeBuilderDom)
+			throws FileNotFoundException {
+		return connect.importFile(resumeBuilderDom);
+	}
+	
+	@Override
+	public MultipartFile docFileExtractor(ResumeBuilderDom resumeBuilderDom) throws FileNotFoundException {
 		
-		return connect.pdfExtractor(resumeBuilderDom);
+		return connect.docFileExtractor(resumeBuilderDom);
 		
 	}
 }

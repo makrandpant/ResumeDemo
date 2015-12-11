@@ -7,5 +7,9 @@ import ResumeBuilder.domain.ResumeBuilderDom;
 
 public interface IResumeBuilderService {
 	
-	MultipartFile pdfExtractor(ResumeBuilderDom resumeBuilderDom) throws FileNotFoundException;
+	MultipartFile importFile(ResumeBuilderDom resumeBuilderDom)
+			throws FileNotFoundException;
+	
+	MultipartFile docFileExtractor(ResumeBuilderDom resumeBuilderDom)
+			throws FileNotFoundException;
 }
