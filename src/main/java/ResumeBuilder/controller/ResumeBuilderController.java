@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,19 +36,18 @@ public class ResumeBuilderController {
 	}
 
 	@RequestMapping(value = URLMapper.RESUME_BUILDER,method = RequestMethod.POST)
-	public String readFile(
+	public ModelAndView readFile(
 			@ModelAttribute("resumeBuilderDom") ResumeBuilderDom resumeBuilderDom,
-			BindingResult result, Model model) throws FileNotFoundException {
+			BindingResult result, ModelAndView modelAndView) throws FileNotFoundException {
 		if (result.hasErrors()) {
-			model.addAttribute("resume_builder_error", resumeBuilderDom);
-			return ViewMapper.RESUME_BUILDER;
+			modelAndView.addObject("resume_builder_error", resumeBuilderDom);
+			return new ModelAndView(ViewMapper.RESUME_BUILDER);
 		} else {
 			MultipartFile importFile = resumeBuilderService.importFile(resumeBuilderDom);
-			MultipartFile extractFile = resumeBuilderService.docFileExtractor(resumeBuilderDom);
-			ModelAndView model1 = new ModelAndView(ViewMapper.RESUME_BUILDER);
-			model1.addObject("import_resume_view", importFile);
-			model1.addObject("extract_resume_view",extractFile);
-			return ViewMapper.RESUME_BUILDER;
+			String extractFile = resumeBuilderService.docFileExtractor(resumeBuilderDom);
+			modelAndView.addObject("import_resume_view", importFile);
+			modelAndView.addObject("extract_resume_view",extractFile);
+			return new ModelAndView(ViewMapper.RESUME_BUILDER,"extract_resume_view",extractFile);
 		}
 	}
 }

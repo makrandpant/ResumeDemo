@@ -4,9 +4,11 @@ import java.io.FileNotFoundException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import ResumeBuilder.dao.ResumeBuilderDao;
 import ResumeBuilder.domain.ResumeBuilderDom;
@@ -27,7 +29,7 @@ public class ResumeBuilderService implements IResumeBuilderService {
 	}
 	
 	@Override
-	public MultipartFile docFileExtractor(ResumeBuilderDom resumeBuilderDom) throws FileNotFoundException {
+	public String docFileExtractor(ResumeBuilderDom resumeBuilderDom) throws FileNotFoundException {
 		
 		return connect.docFileExtractor(resumeBuilderDom);
 		

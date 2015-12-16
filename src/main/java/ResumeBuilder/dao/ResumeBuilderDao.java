@@ -97,8 +97,10 @@ public class ResumeBuilderDao implements IResumeBuilderDao {
 		return null;
 	}
 		
-		public MultipartFile docFileExtractor(ResumeBuilderDom resumeBuilderDom)
+		public String docFileExtractor(ResumeBuilderDom resumeBuilderDom)
 				throws FileNotFoundException {
+			String htmlContent = null;
+			 Document doc=null;
 		// Parse .doc file in html format using apache tika 
 		try{
 			ToXMLContentHandler handler = new ToXMLContentHandler();
@@ -107,8 +109,8 @@ public class ResumeBuilderDao implements IResumeBuilderDao {
 			FileInputStream fistream = new FileInputStream("D:\\resume\\new\\"
 					+ resumeBuilderDom.getFileName() + ".doc");
 			parser.parse(fistream, handler, metadata);
-			
-			// Extract html tag elements and content of tags 
+			 htmlContent = handler.toString().trim();
+			/*// Extract html tag elements and content of tags 
 			Document doc = Jsoup.parse(handler.toString());
 			System.out.println("Title is: " + doc.title());
 			System.out.println("Head is:" + doc.head());
@@ -122,12 +124,13 @@ public class ResumeBuilderDao implements IResumeBuilderDao {
 			System.out
 					.println("footer is: " + doc.getElementsByClass("footer"));
 			System.out.println("Searched text is: "
-					+ doc.getElementsContainingOwnText("Sample Word Document"));
-
+					+ doc.getElementsContainingOwnText("Sample Word Document"));*/
+			
 		} catch (IOException | SAXException | TikaException e) {
-			e.printStackTrace();
+			logger.error(e.getLocalizedMessage());
 		}
-		return null;
+		return htmlContent;
+
 	}
 }
 
