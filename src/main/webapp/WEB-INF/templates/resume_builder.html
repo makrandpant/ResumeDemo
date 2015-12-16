@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:Sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Resume Builder</title>
+<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+</head>
+<body>
+	<form action="/resume_builder.html" th:action="@{/resume_builder.htm}"
+		enctype="multipart/form-data" method="post">
+		<p>
+			File Name: <input type="text" name="fileName" />
+		</p>
+		<p>
+			Browse: <input type="file" name="fileResume" size="40" />
+		</p>
+		<div class="send">
+			<input type="submit" value="Send" id="send" />
+		</div>
+	</form>
+	<span id="send_view" th:utext="${extract_resume_view}"></span>
+</body>
+</html>
